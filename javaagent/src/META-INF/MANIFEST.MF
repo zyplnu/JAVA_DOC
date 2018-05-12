@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: com.hyena.javaagent.test.MainClass
+Premain-Class: com.hyena.javaagent.test.JavaAgentTest
+

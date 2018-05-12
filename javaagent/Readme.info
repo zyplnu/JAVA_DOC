@@ -1,0 +1,35 @@
+project : 创建javaagent
+
+1.编写主文件（有main方法的文件）
+2.编写javaagent class文件，在这个项目是JavaAgentTest
+3.生成jar包
+       1) artifacts ---> jar --->  from modules with dependencies
+       2) 设置jar包名字，在“+” 下选择 module output compiler ，意思是把当前模块编译的文件添加到这个jar里面，当然“+”下
+       还有别的选项，比如library，file，directory，这说明，你可以往这个jar里面添加library ,file , directory
+       设置MANIFEST.MF文件 ： 在这个模块下， 我们设置Premain-Class属性和对应的类，如下：
+       Premain-Class: com.hyena.javaagent.test.JavaAgentTest
+       注意：在IDE中，类是以src为根目录的，也就是命令的工作目录---即在这个src目录下执行java命令，所以在查找类/文件
+       的时候，都是以src为根目录的
+
+4.执行java -javaagent:XXX.jar[=options] 这个options被当做一个String传到Premain-Class中的premain方法
+做参数   ----->  这种是对应命令行的情形　（也就是cli/command line/就是在终端运行java程序的时候）、
+
+对于在IDE的情况下， 需要Run -> Edit configuration 设置VM的参数 ，即加上-javaagent:XXX.jar （这有一个问题
+：我把javaagent.jar 放在src下， 然后在vm参数设置为 -javaagent:javaagent.jar 会出现找不到javaagent.jar的
+情况，这个我不知道为什么？？？？？？？
+）
+
+5.javaagent能做什么： 这个要参考博客了！！ 我下载了几篇，放到了src下的javaagent.resource包下
+
+
+
+
+
+
+
+
+
+
+
+
+
