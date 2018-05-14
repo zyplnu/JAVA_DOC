@@ -86,6 +86,74 @@ log4j.appender.File.conversionPattern=%m%n
 
 
 
+log4j支持unix风格的变量替换， 如${variableName}
+
+调试级别：
+
+        TRACE  # 追踪这条信息，也就是说把一条普通信息，当做一个日志信息
+        DEBUG  # 将日志信息的警告级别为DEBUG
+        INFO
+        WARN
+        ERROR
+        FATAL
+        ALL
+
+
+log4j提供的Appender对象主要负责打印日志消息到不同的目的地，如控制台，文件，sockets，NT事件日志等等
+
+
+每个Appender对象具有与之相关联的不同属性，并且这些属性表明对象的行为
+
+属性                                  描述
+
+layout                      Appender使用布局对象和预支相关的格式化日志记录信息
+target                      Appender的输出目标，可以是控制台，一个文件
+level                       级别是必须的，以控制日志消息的过滤
+threshhold                  Appender可以有与之独立的记录器级别相关联的级别阈值水平，
+                            Appender忽略具有级别低于阈值级别的任何日志消息
+
+filter                      Filter对象可以分析超出级别的匹配记录信息，并决定是否记录的请求应该有一个特定的Appender或这忽略处理
+
+
+
+
+/*****************************************************************
+log4j的主要几个类：
+
+Logger :
+
+Category (org.apache.log4j)
+    Logger (org.apache.log4j)
+        NOPLogger (org.apache.log4j.spi)
+        RootLogger (org.apache.log4j.spi)   ------> 对应log4j.properties中的log4j.rootLogger
+        RootCategory (org.apache.log4j.spi)
+
+
+Appender:
+        JDBCAppender (org.apache.log4j.jdbc)
+        AppenderSkeleton (org.apache.log4j)
+            SocketHubAppender (org.apache.log4j.net)
+            SyslogAppender (org.apache.log4j.net)
+            SocketAppender (org.apache.log4j.net)
+            NullAppender (org.apache.log4j.varia)
+            TelnetAppender (org.apache.log4j.net)
+            LF5Appender (org.apache.log4j.lf5)
+            RewriteAppender (org.apache.log4j.rewrite)
+            SMTPAppender (org.apache.log4j.net)
+            WriterAppender (org.apache.log4j)
+                ConsoleAppender (org.apache.log4j)
+                FileAppender (org.apache.log4j)
+            NTEventLogAppender (org.apache.log4j.nt)
+            JDBCAppender (org.apache.log4j.jdbc)
+            AsyncAppender (org.apache.log4j)
+            JMSAppender (org.apache.log4j.net)
+
+/*************************************************************
+
+
+
+
+
 
 
 
