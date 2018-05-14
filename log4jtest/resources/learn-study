@@ -1,0 +1,150 @@
+log4j学习记录：
+
+资源来自：https://www.yiibai.com/log4j 易百教程
+
+1.log4j安装配置
+
+log4j是高度可配置的，并可通过在运行时的外部文件配置。它根据日志的优先级别，并提供机制，以指示记录信息到许多的目的地
+，诸如：数据库，文件，控制台，unix系统日志等
+
+log4j中有三个主要的组成部分：
+
+    。loggers：负责捕获记录信息
+    。appenders：负责发布日志信息，以不同的目的首选项
+    。layouts：负责格式化不同风格的日志信息
+
+    特性：线程安全
+         基于一个名为记录器的层次结构
+         ×××  支持每个记录器输出到多个追加器（Appenders）
+         支持国际化
+         日志行为可以使用配置文件在运行时设置
+         log4j设计从一开始就是处理java异常
+         ××× log4j使用多个层次，即ALL, TRACE , DEBUG , INFO , WARNING , FATAL
+         ××× 日志输出的格式可以通过扩展layouts类容易的改变
+         ××× 日志输出的目标，以及写入策略可以通过实现Appender借口改变
+
+
+
+2.log4j架构
+      图片参考：log4j架构.png
+
+
+
+
+            Logger Object ------ >  Filter Object#1  ---->Filter Object#2 ------ >  Appender#1
+                        |
+                        |
+                        |-------->  Filter Object#1 ----> Filter Object#2 -------> Appender#2
+
+
+                                                                                        ^
+                                                                                        |
+                                                                                        |
+                                                                                        |
+                                                                                      Layouts
+            从上面我们可以看到：Logger可以把日志信息发送到好几个Appender
+                             Appender前面可以接好几个Filter
+                             Layout来格式化Appender的输出
+
+
+
+
+3.log4j配置
+
+log4j.properties文件是一个key-value对保存log4j配置属性文件。默认情况下，日志管理在classpath查找一个名为
+log4j.properties的文件
+
+语法：
+
+# define the root logger with appender name X in the level of DEBUG
+log4j.rootLogger=DEBUG,x   # level , name
+
+# set the appender named X to be a file appender
+log4j.appender.X=org.apache.log4j.FileAppender    # appender class
+
+# define the layout for X appender
+log4j.appender.X.layout=org.apache.PatternLayout  # Layout class
+log4j.appender.X.layout.conversionPattern=%m%n    # layout format
+
+
+eg :
+
+#define the root logger with appender FileAppender in the level of info
+log4j.rootLogger=INFO,File
+
+#define the file appender
+log4j.appender.File=org.apache.log4j.FileAppender
+
+#define the layout for file appender
+log4j.appender.File.layout=org.apache.log4j.PatternLayout
+log4j.appender.File.conversionPattern=%m%n
+
+解释：第一个一个名字为File，level为info的appender
+     这个appender的类为org.apache.log4j.FileAppender
+     这个appender使用的Layout是org.apache.log4j.PatternLayout
+     这个layout使用的格式是%m%n
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
