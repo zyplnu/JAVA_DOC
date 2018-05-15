@@ -156,7 +156,50 @@ Appender:
 
 
 
+最重要的：
 
+记录器的层次Logger Hierarchy
+       首先，我们先看一下何为层次，以我们最熟悉的继承为例
+假如类B是类C的父类，类A是类C的祖先类，类D是类C的子类。这些类之间就构成一种层次关系。在这些具有层次关系的类中，子类都可继承它的父类的特征，如类B的对象能调用类A中的非private实例变量和函数；而类C由于继承自类B，所以类B的对象可以同时调用类A和类B中的非private实例变量和函数。
+在log4j中，处于不同层次中的Logger也具有象类这样的继承关系。
+
+     如果一个应用中包含了上千个类，那么也几乎需要上千个Logger实例。如何对这上千个Logger实例进行方便地配置，就是一个很重要的问题。Log4J采用了一种树状的继承层次巧妙地解决了这个问题。在Log4J中Logger是具有层次关系的。它有一个共同的根，位于最上层，其它Logger遵循类似包的层次。
+
+根记录器root logger
+      就象一个Java中的Object类一样，log4j中的logger层次中有一个称之为根记录器的记录器，其它所有的记录器都继承自这个根记录器。根记录器有两个特征
+
+  1) 根记录器总是存在。就像Java中的Object类一样，因为用log4j输出日志信息是通过记录器来实现的，所以只要你应用了log4j，根记录器就肯定存在的。
+  2) 根记录器没有名称，所以不能通过名称来取得根记录器。但在Logger类中提供了getRootLogger()的方法来取得根记录器。
+
+记录器的层次
+    Logger遵循类似包的层次。如
+static Logger rootLog = Logger.getRootLogger();
+static Logger log1 = Logger.getLogger("test4j");
+static Logger log2 = Logger.getLogger("test4j.test4j2");
+static Logger log3 = Logger.getLogger("test4j.test4j2.test4j2");
+    那么rootLog是log2的祖先子记录器，log1是log2的父子记录器，log3是log2的子记录器。记录器象Java中的类继承一样，子记录器可以继承父记录器的设置信息，也可以可以覆写相应的信息。
+
+   首先先看一下记录器层次中的继承有什么用处。假设程序中的每个包都具有一些基本的日志信息，而包中的不同包可能会有些额外的日志信息要输出，这种情况就可以象处理Java中的类一样，运用Logger中的层次关系来达到目的。假设有个名为A的包，我包下的所有类都要把日志信息输出到控制台中；A.B包除了输出到控制台外还要输出到文件中；A.C包除了输出到控制台中还要输出到HTML文档中。这样我们就可以通过定义一个父记录器A，它负责把日志信息输出到控制台中；定义一个A的子记录器A.B，它负责把日志信息输出到文件中；定义一个A的子记录器A.C，它负责把日志信息输出到HTML文档中。
+
+
+       记录器遵循的是类似包的层次，这样做为我们带来了大大的方便。Logger类中的getLogger()方法可以取得Logger对象，这个方法有三种参数形式String、Class和URL，其实不论是用哪一种，最终都是通过记录器的名字来取得记录器对象的。如果要取得一个名为A.B的记录器对象，我们可以Logger.getLogger(“A.B”)。但从上面的例子中，我们都是通过Logger.getLogger(TestLog4j.class.getName())这种方法来取得记录器对象。这是为什么呢？现在我们假设A.B的包下有一个类BClass，那么我们调用BClass.class.getName()得到的是这个类的全名A.B.BClass。所以当调用Logger.getLogger(BClass.class.getName())时，最理想的情况是返回名为A.B.BClass的记录器对象。但是如果不存在名为A.B.BClass的记录器时它会怎样呢？其实通过Logger类的getLogger方法取得记录器时存在下面两种情况：
+1) 如果存在与所要找的名字完全相同的记录器，则返回相应的记录器对象。
+当调用Logger.getLogger(BClass.class.getName())时，如果定义了名为A.B.BClass的记录器，它就返回该记录器的对象。
+2) 但如果找不到，它会尝试返回在记录器层次中与所要找的记录器最接近的记录器对象。
+     当调用Logger.getLogger(BClass.class.getName())时，如果没有定义了名为A.B.BClass的记录器，那会尝试返回名为A.B的记录器的对象；如果又没有定义名为A.B的记录器，它会尝试返回名为A的记录器的对象；如果也没定义名为A的记录器，它就会返回根记录器的对象，而根记录器是必须存在的，所以你总能得到一个记录器对象。
+好了，现在我们回到前面的问题，我们为什么总要通过Logger.getLogger(BClass.class.getName())这种以类全名作为参数来取得记录器对象呢？其实这是为了管理方便。因为我们在定义设计Logger时也遵循类似包的规则，使设计器的名称与程序中的类包对应。如上面的假设中我们的程序中有A包，A包下有B包和C包，B包下又有类BClass，那么我们就可使设计器的名为A、A.B、A.C、A.B.BClass，以此类推。那么当我们通过类命名来取得设计器对象时，总能取到与所要的设计器最接近的设计器对象。
+
+     如何应用记录器的层次
+如果定义及获取不同层次的记录器
+任何一个记录器的使用都有两个步骤：
+   1) 在配置文件中定义相应的记录器。
+     在配置文件中定义记录器的格式有两种
+定义根记录器的格式为
+log4j.rootLogger = [ level ], appendName1, appendName2, …appendNameN
+
+     定义一个非根记录器的格式为
+log4j.logger.loggerName1 = [ level ], appendName1,…appendNameN……
+log4j.logger.loggerNameM = [ level ], appendName1, …appendNameN……
 
 
 
